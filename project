@@ -1,0 +1,173 @@
+import matplotlib.pyplot as plt
+import plotly.offline as pyo
+pyo.init_notebook_mode()
+from plotly.graph_objs import *
+import plotly.graph_objs as go
+import numpy as np
+import pandas as pd
+
+df_credits = pd.read_csv('C:\\Users\\46766\\Desktop\\credits.csv')
+df_movies = pd.read_csv('C:\\Users\\46766\\Desktop\\movies.csv')
+
+
+
+df_merged_cleaned = df_merged.copy()
+df_merged_cleaned.dropna(subset=['release_date', 'runtime'], inplace=True)
+
+df_merged_cleaned['overview'].fillna('No overview available', inplace=True)
+
+df_merged_cleaned['tagline'].fillna('', inplace=True)
+
+
+
+columns_to_drop = ['homepage', 'keywords', 'original_title', 'status']
+df_merged_cleaned = df_merged_cleaned.drop(columns=columns_to_drop, axis=1)
+
+
+df_merged_cleaned['release_date'] = pd.to_datetime(df_merged_cleaned['release_date'], errors='coerce')
+
+
+import json
+
+def parse_json_column(x):
+    try:
+        return json.loads(x.replace("'", '"'))
+    except (json.JSONDecodeError, AttributeError):
+        return x
+
+json_columns = ['genres', 'production_companies', 'production_countries', 'spoken_languages']
+
+for column in json_columns:
+    df_merged_cleaned[column] = df_merged_cleaned[column].apply(parse_json_column)
+
+
+df_merged_cleaned.to_csv('cleaned_data.csv', index=False)
+
+
+
+df_merged_cleaned.to_csv('C:\\Users\\46766\\Desktop\\cleaned_credits.csv', index=False)
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+import seaborn as sns
+sns.set_style('darkgrid')
+
+df_credits = pd.read_csv('C:\\Users\\46766\\Desktop\\credits.csv')
+df_credits.head()
+
+import pandas as pd
+
+
+def extract_name(item):
+    try:
+        if isinstance(item, list):
+            return [genre['name'] for genre in item]
+        elif isinstance(item, str):
+            return [genre['name'] for genre in eval(item)]
+        else:
+            return []
+    except (KeyError, SyntaxError):
+        return []
+
+df_credits['genres'] = df_credits['genres'].apply(extract_name)
+
+df_credits['production_countries'] = df_credits['production_countries'].apply(extract_name)
+
+print(df_credits[['genres', 'production_countries']])
+
+
+import pandas as pd
+
+def extract_name(item):
+    try:
+        if isinstance(item, list):
+            return [element['name'] if 'name' in element else element for element in item]
+        elif isinstance(item, str):
+            return [element['name'] if 'name' in element else element for element in eval(item)]
+        else:
+            return []
+    except (KeyError, SyntaxError):
+        return []
+
+columns_to_process = ['production_companies', 'production_countries', 'spoken_languages', 'cast', 'crew']
+
+for column in columns_to_process:
+    df_credits[column] = df_credits[column].apply(extract_name)
+
+print(df_credits[columns_to_process])
+
+
+def extract_name(item):
+    try:
+        if isinstance(item, list):
+            return [element['name'] if 'name' in element else element for element in item]
+        elif isinstance(item, str):
+            return eval(item)
+        else:
+            return item
+    except:
+        return item
+
+for column in columns_to_process:
+    df_credits_cleaned[column + '_cleaned'] = df_credits_cleaned[column].apply(extract_name)
+
+print(df_credits_cleaned[columns_to_process + [col + '_cleaned' for col in columns_to_process]])
+
+
+
+
+df_credits_cleaned.to_csv('C:\\Users\\46766\\Desktop\\cleaned_creditsII.csv', index=False)
+
+
+import pandas as pd
+
+df_exploded = df_credits_cleaned.explode('genres')
+
+
+df_credits_cleaned['production_companies_cleaned'] = df_credits_cleaned['production_companies'].apply(extract_name)
+df_companies_exploded = df_credits_cleaned.explode('production_companies_cleaned')
+
+
+df_credits_cleaned['production_countries_cleaned'] = df_credits_cleaned['production_countries'].apply(extract_name)
+df_countries_exploded = df_credits_cleaned.explode('production_countries_cleaned')
+
+
+df_credits_cleaned['cast_cleaned'] = df_credits_cleaned['cast'].apply(extract_name)
+df_cast_exploded = df_credits_cleaned.explode('cast_cleaned')
+
+
+df_credits_cleaned.to_csv('C:\\Users\\46766\\Desktop\\cleaned_creditsIII.csv', index=False)
+
+import pandas as pd
+
+
+df_genres = df_credits_cleaned.explode('genres')
+
+df_companies = df_credits_cleaned.explode('production_companies')
+
+df_countries = df_credits_cleaned.explode('production_countries')
+
+df_cast = df_credits_cleaned.explode('cast')
+
+
+df_genres.to_excel('genres.xlsx', index=False)
+df_companies.to_excel('companies.xlsx', index=False)
+df_countries.to_excel('countries.xlsx', index=False)
+df_cast.to_excel('cast.xlsx', index=False)
+
+
+df_credits_cleaned.to_csv('C:\\Users\\46766\\Desktop\\cleaned_creditsIIiI.csv', index=False)
+
+desktop_path = r'C:\\Users\\46766\\Desktop\\'
+
+df_genres.to_csv('C:\\Users\\46766\\Desktop\\genres.csv', index=False)
+df_companies.to_csv('C:\\Users\\46766\\Desktop\\companies.csv', index=False)
+df_countries.to_csv('C:\\Users\\46766\\Desktop\\countries', index=False)
+df_cast.to_csv('C:\\Users\\46766\\Desktop\\cast', index=False)
+
+
+df_cast.to_csv('cast.csv', index=False)
+
+
